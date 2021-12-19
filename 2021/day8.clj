@@ -1,3 +1,5 @@
+#!/usr/bin/env bb
+
 (require '[clojure.string :as s])
 
 (def lines
