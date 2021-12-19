@@ -24,7 +24,6 @@
       (assoc output scan-idx scan-pts))))
 
 (defn pow2 [x] (Math/pow x 2))
-(defn dist [[a b c] [d e f]] (+ (pow2 (- a d)) (pow2 (- b e)) (pow2 (- c f))))
 (defn manhattan [[a b c] [d e f]] (+ (Math/abs (- a d)) (Math/abs (- b e)) (Math/abs (- c f))))
 
 (defn camrotations [- [x y z]]
@@ -48,14 +47,13 @@
            rotator camrotators
            pivot2 points2
            :let [transformer (fn [p] (rotator (translate pivot2 p)))]
-           :let [common-pts (filter pts1s (map transformer points2))]
-           :when (<= 12 (count common-pts))]
+           :when (<= 12 (count (filter pts1s (map transformer points2))))]
        (comp (fn [[x y z]] (translate [(- x) (- y) (- z)] pivot1)) transformer)))))
 (def try-connect-fn (memoize try-connect-fn))
 
-(let [dist-signature (memoize (fn [k] (set (for [a (scanners k) b (scanners k)] (dist a b)))))]
+(let [dist-signature (memoize (fn [k] (set (for [a (scanners k) b (scanners k)] (manhattan a b)))))]
   (defn potential?  [k1 k2]
-    (< 30 (count (filter (dist-signature k1) (dist-signature k2)))))
+    (< 78 (count (filter (dist-signature k1) (dist-signature k2)))))
   (def potential? (memoize potential?)))
 
 (def potential-children
