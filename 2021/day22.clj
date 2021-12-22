@@ -27,9 +27,7 @@
 ;; SECOND PART
 
 (defn realpoints [& triples]
-  (for [[a b cmd :as triple] triples
-        :when (<= a b)]
-    triple))
+  (filter (fn [[a b cmd]] (<= a b)) triples))
 
 (defn overlap-segment [[a b] [c d]]
   {:pre [(<= a b) (<= c d)]
@@ -85,10 +83,10 @@
                ; (println :state s)
                (case cmd
                  :on (if (empty? s)
-                       #{region}
+                       (list region)
                        (mapcat (partial union-cubes region) s))
                  :off  (mapcat (fn [oldcube] (subtract-cubes oldcube region)) s)))
-             #{})
+             ())
      (mapcat points) (set) (count) (println :testing-second-answer)
      ;; (map cube-volume) (reduce + 1N) (println)
 
