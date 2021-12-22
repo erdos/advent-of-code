@@ -39,14 +39,9 @@
     (< b c) (list [a b :first] #_[b c :none] [c d :second])
     (< d a) (list [c d :second] #_[d a :none] [a b :first])
 
-    (< a c b d) (realpoints [a (dec c) :first] [c b :both] [(inc b) d :second])
-    (< c a d b) (realpoints [c (dec a) :second] [a d :both] [(inc d) b :second])
-
-    ;; common pts
-    (= b c) (realpoints [a (dec b) :first] [b c :both] [(inc c) d :second])
-    (= d a) (realpoints [(inc a) b :first] [d a :both] [c (dec d) :second])
-
-    (and (= a c) (= b d)) (list [a d :both]) ;; total overlap
+    ;; little intersection
+    (<= a c b d) (realpoints [a (dec c) :first] [c b :both] [(inc b) d :second])
+    (<= c a d b) (realpoints [c (dec a) :second] [a d :both] [(inc d) b :second])
 
     ;; one contains another
     (<= a c d b) (realpoints [a (dec c) :first] [c d :both] [(inc d) b :first])
