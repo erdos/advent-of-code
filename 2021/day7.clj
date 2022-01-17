@@ -3,19 +3,24 @@
 (def input (read-string (str "[" (slurp "input7.txt") "]")))
 (def total (apply max input))
 
-(defn cost [a b]
-  (Math/abs (- a b)))
+(defn solve [cost input total]
+  (transduce (map (fn [t] (transduce (map (partial cost t)) + input)))
+             min
+             Long/MAX_VALUE
+             (range (inc total)))
 
-(->> (for [t (range (inc total))]
-       (reduce + (map (partial cost t) input)))
-     (apply min)
-     (println "First answer:"))
+ ;; without transducers:
+  #_(->> (for [t (range (inc total))]
+         (reduce + (map (partial cost t) input)))
+       (apply min)))
 
 (defn cost [a b]
-  (let [n (Math/abs (- a b))]
+  (let [d (- a b)] (if (pos? d) d (- d))))
+
+(println "First answer: " (solve cost input total))
+
+(defn cost2 [a b]
+  (let [n (cost a b)]
     (/ (* n (inc n)) 2)))
 
-(->> (for [t (range (inc total))]
-       (reduce + (map (partial cost t) input)))
-     (apply min)
-     (println "Second answer:"))
+(println "Second answer" (solve cost2 input total))
