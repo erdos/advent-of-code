@@ -1,4 +1,4 @@
-(ns day08)
+(ns day10)
 (declare data lines)
 (load-file "common.clj")
 
