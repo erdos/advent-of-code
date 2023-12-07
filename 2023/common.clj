@@ -14,6 +14,8 @@
 
 (def words (str/split data #"[, ;]"))
 
+(defn read-numbers [s] (read-string (str "[" s "]")))
+
 (defn sum [xs] (reduce + 0 xs))
 
 (defmacro fnx [body] (list 'fn* '[x] body))
