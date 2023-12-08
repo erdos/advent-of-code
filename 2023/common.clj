@@ -51,3 +51,7 @@
 
 #_(require '[loom.graph :as lg :refer [add-nodes add-edges remove-nodes remove-edges subgraph nodes edges successors predecessors graph digraph weighted-graph weighted-digraph]]
            '[loom.alg :as la :refer [dijkstra-path topsort connected-components]])
+
+(defn gcd [a b] (if (zero? b) a (recur b, (mod a b))))
+(defn lcm [a b] (/ (* a b) (gcd a b)))
+(defn lcmv [& v] (reduce lcm v))
