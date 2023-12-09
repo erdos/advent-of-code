@@ -3,10 +3,10 @@
 (load-file "common.clj")
 
 (defn parse-line [line]
-  (mapv parse-long (words line)))
+  (mapv parse-long (.split line " ")))
 
 (defn diffs [numbers]
-  (map - (next numbers) numbers ))
+  (map - (next numbers) numbers))
 
 (defn solve1 [numbers]
   (if (apply = numbers)
