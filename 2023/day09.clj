@@ -8,18 +8,18 @@
 (defn diffs [numbers]
   (map - (next numbers) numbers))
 
-(defn solve1 [numbers]
+(defn solve [numbers]
   (if (apply = numbers)
     (first numbers)
-    (+ (last numbers) (solve1 (diffs numbers)))))
+    (+ (last numbers) (solve (diffs numbers)))))
 
 #_ ;; alternatively, with reduce:
-(defn solve1 [numbers]
+(defn solve [numbers]
   (reduce (fn [sum numbers] (+ sum (last numbers))) 
           0 (take-while (partial apply not= 0) (iterate diffs numbers))))
 
 #_ ;; alternatively, with loop-recur:
-(defn solve1 [numbers]
+(defn solve [numbers]
   (loop [numbers numbers
          acc    0]
     (if (apply = numbers)
@@ -28,18 +28,13 @@
 
 (->> lines
      (map parse-line)
-     (map solve1)
+     (map solve)
      (reduce +)
      (println "First"))
 
-;; second part is the same really, only we subtract the diff from the first nr
-(defn solve2 [numbers]
-  (if (apply = numbers)
-    (first numbers)
-    (- (first numbers) (solve2 (diffs numbers)))))
-
 (->> lines
      (map parse-line)
-     (map solve2)
+     (map reverse)
+     (map solve)
      (reduce +)
      (println "Second"))
