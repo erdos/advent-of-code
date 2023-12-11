@@ -2,9 +2,6 @@
 
 (load-file "common.clj")
 
-(defn parse-line [line]
-  (mapv parse-long (.split line " ")))
-
 (def empty-rows
   (into (sorted-set)
         (for [[i row] (map-indexed vector grid)
@@ -32,14 +29,12 @@
         (- (abs (- b y)) bb)
         (* scale bb))))
 
-(->> (for [a galaxies, b galaxies] (manhattan2 a b 2))
-     (reduce +)
-     (* 1/2) (long)
-     (println "First")
-     (time))
+(defn solve [label scale]
+  (->> (for [a galaxies, b galaxies] (manhattan2 a b scale))
+       (reduce +)
+       (* 1/2) (long)
+       (println label)
+       (time)))
 
-(->> (for [a galaxies, b galaxies] (manhattan2 a b 1000000))
-     (reduce +)
-     (* 1/2) (long)
-     (println "Second")
-     (time))
+(solve "First" 2)
+(solve "First" 1000000)
