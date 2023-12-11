@@ -4,16 +4,13 @@
 
 (def empty-rows
   (into (sorted-set)
-        (for [[i row] (map-indexed vector grid)
-              :when (every? #{\.} row)]
-          i)))
+        (keep-indexed (fn [i row] (when (every? #{\.} row) i)))
+        grid))
 
 (def empty-cols
   (into (sorted-set)
-        (for [j (range (count (first grid)))
-              :when (every? #{\.} (for [[i row] (map-indexed vector grid)]
-                                    (get-in grid [i j])))]
-           j)))
+        (keep-indexed (fn [j col] (when (every? #{\.} col) j)))
+        (transpose grid)))
 
 (def galaxies
   (for [[i row] (map-indexed vector grid)
