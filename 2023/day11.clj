@@ -18,7 +18,7 @@
         :when (= \# cell)]
     [i j]))
 
-(defn manhattan2 [[a b :as one] [x y :as two] scale]
+(defn manhattan2 [[a b] [x y] scale]
   (let [aa (count (subseq empty-rows > (min a x) < (max a x)))
         bb (count (subseq empty-cols > (min b y) < (max b y)))]
      (+ (abs (- a x))
@@ -33,4 +33,4 @@
        (time)))
 
 (solve "First" 2)
-(solve "First" 1000000)
+(solve "Second" 1000000)
