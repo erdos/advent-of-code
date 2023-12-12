@@ -8,8 +8,8 @@
      (map parse-long (.split nrs ","))]))
 
 (defn valid-suffixes [row number]
-  (for [i (range 0 (inc (- (count row) number)))
-        :when (every? #{\. \?} (take i row))
+  (for [i (range (inc (- (count row) number)))
+        :while (every? #{\. \?} (take i row))
         :when (every? #{\# \?} (take number (drop i row)))
         :when (#{\. \?} (nth row (+ i number) \.))]
     (drop (+ i number 1) row)))
