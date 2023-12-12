@@ -4,7 +4,7 @@
 
 (defn parse-line [line]
   (let [[row nrs] (.split line " ")]
-    [(vec (.replaceAll row "\\.\\.+" "."))
+    [(str (.replaceAll row "\\.\\.+" "."))
      (map parse-long (.split nrs ","))]))
 
 (defn valid-suffixes [row number]
@@ -30,7 +30,8 @@
 ;; First: 8270
 
 (defn *5 [[line rule]]
-  [(apply concat (interpose [\?] (repeat 5 line)))
+  (assert (string? line))
+  [(clojure.string/join "?" (repeat 5 line))
    (apply concat (repeat 5 rule))])
 
 (->> lines
