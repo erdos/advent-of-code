@@ -30,7 +30,6 @@
 ;; First: 8270
 
 (defn *5 [[line rule]]
-  (assert (string? line))
   [(clojure.string/join "?" (repeat 5 line))
    (apply concat (repeat 5 rule))])
 
