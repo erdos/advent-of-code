@@ -14,11 +14,9 @@
         (count stack)
         (recur (next lines) (conj stack (first lines)))))))
 
-(def solve-ver (comp solve-hor transpose))
-
 (defn solve [block]
-  (or (some-> (solve-hor block) (* 100))
-      (solve-ver block)))
+  (or (solve-hor (transpose block))
+      (* 100 (solve-hor block))))
 
 (println "First" (transduce (map solve) + blocks))
 
