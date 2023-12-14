@@ -14,10 +14,6 @@
        (mapv (partial fixpt tilt-row))
        transpose))
 
-(defn rot-ccw [grid] (mapv reverse (transpose grid)))
-
-(def spin-cycle (comp tilt rot-ccw tilt rot-ccw tilt rot-ccw tilt rot-ccw))
-
 (defn calc-load [grid]
   (->> (map #(count (filter #{\O} %)) grid)
        (reverse)
@@ -26,6 +22,10 @@
 
 (->> grid tilt calc-load
      (println "First") (time))
+
+(defn rot-ccw [grid] (mapv reverse (transpose grid)))
+
+(def spin-cycle (comp tilt rot-ccw tilt rot-ccw tilt rot-ccw tilt rot-ccw))
 
 (defn nth-repeat [f n state]
   (loop [state state
