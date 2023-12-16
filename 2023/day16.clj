@@ -27,13 +27,14 @@
   (when (and (< -1 y (count grid)) (< -1 x (count (grid y)))) pos))
 
 (defn count-energized [starting]
-  (assert (in-bounds starting))
-  (loop [past-active (sorted-set)
-         active      #{starting}]
-  (if (seq active)
-    (recur (into past-active active)
-           (->> active (mapcat step) (keep in-bounds) (remove past-active)))
-    (->> past-active (map (partial take 2)) set count))))
+  (->> [#{} #{starting}]
+       (fixpt (fn [[past-active active]]
+                [(into past-active active)
+                 (->> active (mapcat step) (keep in-bounds) (remove past-active))]))
+       (first)
+       (map (partial take 2))
+       (set)
+       (count)))
 
 (println "First" (count-energized [0 0 :right]))
 
@@ -43,4 +44,5 @@
              (for [x (range (count (grid 0)))] [(dec (count grid)) x :up]))
      (map count-energized)
      (apply max)
-     (println "Second"))
+     (println "Second")
+     (time))
