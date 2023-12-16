@@ -1,4 +1,4 @@
-(ns day14)
+(ns day15)
 
 (def data (-> *in* (slurp) (.replaceAll "\n+" "") (.split ",")))
 
