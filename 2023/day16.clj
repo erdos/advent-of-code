@@ -1,6 +1,6 @@
 (ns day16)
 
-(load-file "common.clj")
+(->> (slurp *in*) (clojure.string/split-lines) (mapv vec) (def grid))
 
 (defn step [[y x dir]]
   (case (get-in grid [y x])
@@ -25,6 +25,8 @@
 
 (defn in-bounds [[y x :as pos]]
   (when (and (< -1 y (count grid)) (< -1 x (count (grid y)))) pos))
+
+(defn fixpt [f x] (let [fx (f x)] (if (= fx x) x (recur f fx))))
 
 (defn count-energized [starting]
   (->> [#{} #{starting}]
