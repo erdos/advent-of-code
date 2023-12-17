@@ -1,0 +1,4 @@
+{:deps
+ {aysylu/loom {:mvn/version "1.0.2"}
+  ; org.clojure/core.logic {:mvn/version "1.0.0"}
+  }}
