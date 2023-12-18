@@ -1,6 +1,6 @@
 (ns day18)
 
-(load-file "common.clj")
+(->> *in* slurp (clojure.string/split-lines) (def lines))
 
 (defn parse [line]
   (let [[_ [a] b c] (re-matches #"(.) (\d+) \(#(.{6})\)" line)]
