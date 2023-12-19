@@ -1,4 +1,4 @@
-(ns day14)
+(ns day19)
 
 (->> *in* slurp (clojure.string/split-lines) (def lines))
 
