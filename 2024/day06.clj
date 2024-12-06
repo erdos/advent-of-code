@@ -32,12 +32,12 @@
        (iterate (partial step grid))
        (map first)
        (take-while inside?)
-       (set)))
+       (set)
+       (time))) ;; 5ms
 
 (->> visited-locs
      (count)
-     (println "First")
-     (time)) ; 0.3ms
+     (println "First"))
 
 (defn cyclic? [path]
   (= (count inside?) (count (take (count inside?) path))))
