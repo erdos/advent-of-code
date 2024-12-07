@@ -15,8 +15,6 @@
         (when (>= tv n) (recur (- tv n) n*)))
     (= tv n)))
 
-(def solve (memoize solve))
-
 (->> input
      (filter (partial apply solve))
      (transduce (map first) +)
@@ -35,8 +33,6 @@
         (when (zero? (rem tv n)) (solve (quot tv n) n*))
         (some-> (cutoff tv n) (recur n*)))
     (= tv n)))
-
-(def solve (memoize solve))
 
 (->> input
      (filter (partial apply solve))
