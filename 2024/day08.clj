@@ -5,13 +5,13 @@
      (mapv vec)
      (def grid))
 
-(def antenna-locs
-  (for [i (range (count grid))
-        j (range (count (grid i)))
-        :when (not= \. (get-in grid [i j]))]
-    [i j]))
-
-(def locations (vals (group-by (partial get-in grid) antenna-locs)))
+(-> (for [i (range (count grid))
+          j (range (count (grid i)))]
+      [i j])
+    (->> (group-by (partial get-in grid)))
+    (dissoc \.)
+    (vals)
+    (->> (def locations)))
 
 (defn in-bounds? [[i j]]
   (and (< -1 i (count grid)) (< -1 j (count (grid 0)))))
@@ -20,29 +20,33 @@
   (for [[t & ts] (iterate next xs) :while t, u ts]
     [t u]))
 
-(defn mirrors [[x1 y1] [x2 y2]]
-  (let [dx (- x2 x1) dy (- y2 y1)]
-    (list [(- x1 dx) (- y1 dy)] [(+ x2 dx) (+ y2 dy)])))
+(defn cross [xs]
+  (for [a xs b xs] [a b]))
+
+(defn vec+ [a b] (mapv + a b))
+(defn vec- [a b] (mapv - a b))
+
+(defn mirrors [a b]
+  [(vec+ b (vec- b a)) (vec- a (vec- b a))])
+
+(def counter ((map (constantly 1)) +))
 
 (->> (transduce (comp (mapcat pairs)
                       (mapcat (partial apply mirrors))
                       (filter in-bounds?)
-                      (distinct)
-                      (map (constantly 1)))
-                + locations)
+                      (distinct))
+                counter locations)
      (println 'First)
      (time))
 
-(defn harmonics [[x1 y1] [x2 y2] d]
-  (for [i (range)] [(- x1 (* i (- x2 x1) d))
-                    (- y1 (* i (- y2 y1) d))]))
+(defn harmonics [pt1 pt2]
+  (iterate (partial vec+ (vec- pt1 pt2)) pt1))
 
-(->> (for [locs locations
-           [loc1 loc2] (pairs locs)
-           d [-1 +1]
-           m (take-while in-bounds? (harmonics loc1 loc2 d))]
-       m)
-     (set)
-     (count)
+(->> (transduce (comp (mapcat cross)
+                      (remove (partial apply =))
+                      (mapcat (comp (partial take-while in-bounds?)
+                                    (partial apply harmonics)))
+                      (distinct))
+                counter locations)
      (println 'Second)
      (time))
