@@ -1,32 +1,33 @@
-(ns day01)
+(ns day12)
 
-(load-file "common.clj")
+(->> (slurp *in*)
+     (clojure.string/split-lines)
+     (mapv (partial mapv vector))
+     (def grid))
 
 (def all-coords
-  (for [i (range (count grid))
-        j (range (count (first grid)))]
-    [i j]))
-
-(defn same-neighbors [[y x :as pt]]
-  (for [[dy dx] [[-1 0] [0 -1] [1 0] [0 1]]
-        :let [x (+ x dx) y (+ y dy)]
-        :when (= (get-in grid pt) (get-in grid [y x]))]
+  (for [y (range (count grid))
+        x (range (count (first grid)))]
     [y x]))
 
-(defn four-neighbors [pt]
-  (for [d [[-1 0] [0 -1] [1 0] [0 1]]] (mapv + pt d)))
+(defn four-neighbors [point]
+  (for [d [[-1 0] [0 -1] [1 0] [0 1]]] (mapv + d point)))
 
-(defn flood-fill [get-neighbors position]
-  (loop [q (list position)
+;; seq of neighboring points with the same value
+(defn similar-neighbors [point]
+  (filter (comp #{(get-in grid point)} (partial get-in grid))
+          (four-neighbors point)))
+
+(defn flood-fill [get-neighbors start]
+  (loop [pts (list start)
          filled #{}]
-    (if-let [[p & q] (seq q)]
-      (if (filled q)
-        (recur q filled)
-        (recur (into q (remove filled (get-neighbors p)))
-               (conj filled p)))
+    (if-let [[p & pts] (seq pts)]
+      (if (filled pts)
+        (recur pts filled)
+        (recur (into pts (remove filled (get-neighbors p))) (conj filled p)))
       filled)))
 
-;; Builds a map where key is a point, value is an area identifier int
+;; Builds a map where key is a location, value is an area identifier int
 (defn identify-locations [get-neighbors points]
   (second (reduce (fn [[max-id loc->id] location]
                     (if (loc->id location)
@@ -35,15 +36,17 @@
                   [0 {}]
                   points)))
 
+;; Given a set of points of an area, calculate set of boundary points (with fractional coordinates)
 (defn area->bounds [area]
   (set (for [pt area
              d [[-1 0] [1 0] [0 1] [0 -1]]
              :when (not (contains? area (mapv + pt d)))]
          (mapv + pt (map #(* 0.5 %) d)))))
 
+;; Coll of sets of points belonging to the same area
 (def areas
   (->> all-coords
-       (group-by (identify-locations same-neighbors all-coords))
+       (group-by (identify-locations similar-neighbors all-coords))
        (vals)
        (map set)))
 
@@ -51,25 +54,22 @@
      (println 'First)
      (time))
 
-(defn round1 [[y x]] [(int y) (int x)])
-(defn round2 [[y x]] [(int (* (Math/signum y) (Math/round (Math/abs y))))
-                      (int (* (Math/signum x) (Math/round (Math/abs x))))])
+(defn left-side  [[y x]] (get-in grid [(int y) (int x)]))
+(defn right-side [[y x]] (get-in grid [(int (* (Math/signum y) (Math/round (Math/abs y))))
+                                   (int (* (Math/signum x) (Math/round (Math/abs x))))]))
 
+;; given a set of colinear points, count how many distinct edges they form
 (defn split-bounds [pts]
   (assert (set? pts))
-  (count (set (vals (identify-locations
-                     (fn sbf [%]
-                       (for [n (four-neighbors %)
-                             :when (pts n)
-                             :when (or (= (get-in grid (round1 %)) (get-in grid (round1 n)))
-                                       (= (get-in grid (round2 %)) (get-in grid (round2 n))))]
-                         n))
-                     pts)))))
+  (->> pts
+       (identify-locations
+        (fn sbf [p] (->> (four-neighbors p)
+                         (filter pts)
+                         (filter (some-fn (comp #{(left-side p)} left-side)
+                                          (comp #{(right-side p)} right-side))))))
+       (vals) (set) (count)))
 
 (defn fract? [x] (#{0.5 -0.5} (rem x 1)))
-
-; (println (fract? 1.0) (fract? 1.5) (fract? -1.5))
- ;(println "!" (split-bounds #{[1.0 0.5] [2.0 0.5] [4.0 0.5] [5.0 0.5]}))
 
 (defn area->side-count [area]
   (assert (set? area))
