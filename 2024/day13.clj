@@ -7,11 +7,12 @@
 ;; where N = number of pushes to A button
 ;;   and M = number of pushes to B button
 ;;
-;; 1. Reordering (i) gets us:  M = (px - N*ax) / bx
-;; 2. Sobstituting into (ii): py = N*ay + (px-N*ax) / bx*by
-;; 3. Expand the subtraction: py = N*ay + px/bx*by  - N*ax/bx*by
-;; 4. Move right:  py - px/bx*by = N*ay   - N*ax/bx*by
-;; 5. Reorg again:             N = (py - px/bx*by) / (ay - ax/bx*by)
+;; 1. Reordering (i) gets us:     M = (px - N * ax) / bx
+;; 2. Substituting into (ii):    py = N * ay + (px - N * ax) / bx * by
+;; 3. Distribute division:       py = N * ay + px / bx * by - N * ax / bx * by
+;; 4. Move term:  py - px / bx * by = N * ay - N * ax / bx * by
+;; 5. Combine N:  py - px / bx * by = N * (ay - ax / bx * by)
+;; 6. Divide to get to N:         N = (py - px / bx * by) / (ay - ax / bx * by)
 ;;
 ;; Note, we only care about integer number of button presses.
 
