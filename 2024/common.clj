@@ -57,3 +57,13 @@
 (defn lcmv [& v] (reduce lcm v))
 
 (def mapv-indexed (comp vec map-indexed))
+
+(defn splitsearch [predicate range]
+  (assert (vector? range))
+  (loop [low  0, high (count range)]
+    (if (< low high)
+      (let [mid (quot (+ low high) 2)]
+        (if (predicate mid)
+          (recur low mid)
+          (recur (inc mid) high)))
+      (when (predicate low) low))))
