@@ -2,17 +2,14 @@
 
 (let [[a b] (.split (slurp *in*) "\n\n")]
   (def patterns (vec (.split a ", ")))
-  (def designs (mapv seq (.split b "\n"))))
-
-(defn starts-with? [prefix v]
-  (or (empty? prefix)
-      (and (= (first prefix) (first v)) (recur (next prefix) (next v)))))
+  (def designs  (vec (.split b "\n"))))
 
 (defn possible-cnt [design]
   (if (empty? design)
     1
-    (reduce + (for [pat patterns :when (starts-with? pat design)]
-                (possible-cnt (drop (count pat) design))))))
+    (reduce + (for [pat patterns
+                    :when (clojure.string/starts-with? design pat)]
+                (possible-cnt (subs design (count pat)))))))
 
 (def possible-cnt (memoize possible-cnt))
 
