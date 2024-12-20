@@ -28,7 +28,7 @@
 (def distance-from-start (zipmap full-path (range path-len)))
 (def distance-from-end   (zipmap full-path (reverse (range path-len))))
 
-;; Seq of [r' [y' x']] pairs for points within distance r to [y x]
+;; Seq of [[y' x'] r'] pairs for points within distance r' <= r to [y x].
 (defn neighbors-in-radius [r [y x]]
   (for [di (range (- r) (inc r))
         dj (range (- r) (inc r))
