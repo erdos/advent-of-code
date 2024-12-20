@@ -26,7 +26,7 @@
 
 (def path-len (count full-path))
 (def distance-from-start (zipmap full-path (range path-len)))
-(def distance-from-end   (zipmap full-path (reverse (range path-len))))
+(def distance-from-end   (zipmap full-path (range path-len 0 -1)))
 
 ;; Seq of [[y' x'] r'] pairs for points within distance r' <= r to [y x].
 (defn neighbors-in-radius [r [y x]]
@@ -36,11 +36,11 @@
     [[(+ y di) (+ x dj)] (+ (abs di) (abs dj))]))
 
 (defn solve [r limit]
-  (count (for [[ps c1] distance-from-start
-               [n nr] (neighbors-in-radius r ps)
-               :when (distance-from-end n)
-               :let  [diff (- path-len 1 (+ c1 (distance-from-end n) nr))]
-               :when (<= limit diff)]
+  (count (for [[point d] distance-from-start
+               [n nr]    (neighbors-in-radius r point)
+               :when     (distance-from-end n)
+               :let      [diff (- path-len nr d (distance-from-end n))]
+               :when     (<= limit diff)]
            diff)))
 
 (println 'First  (solve 2 100))
