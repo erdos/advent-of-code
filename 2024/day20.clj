@@ -43,5 +43,5 @@
                :when     (<= limit diff)]
            diff)))
 
-(println 'First  (solve 2 100))
-(println 'Second (solve 20 100))
+(println 'First  (time (solve 2 100)))
+(println 'Second (time (solve 20 100)))
