@@ -16,7 +16,7 @@
 
 (def button-mapping (merge directional-mapping numeric-mapping))
 
-;; seq of sequences that gets us from here to there
+;; Vector of (at most two) buttons to press to move between coords
 (defn sequences-step [[y1 x1] [y2 x2]]
   (cond-> []
     (> x1 x2) (conj \<)
@@ -24,23 +24,21 @@
     (< x1 x2) (conj \>)
     (< y1 y2) (conj \v)))
 
-(defn pos-step [[y x] c]
-  (case c
+(defn pos-step [[y x] button]
+  (case button
     \> [y (inc x)]
     \< [y (dec x)]
     \v [(inc y) x]
     \^ [(dec y) x]))
 
-;; sequences to get from pos1 to pos2
+;; Possible button sequences to get from start to end
 (defn loc-sequences [start end]
-  (assert (vector? start) (str "1 not vec: " (pr-str start)))
-  (assert (vector? end) (str "2 Not vec " (pr-str end)))
   (cond (= start [0 -2]) []
-        (= start end) [[]]
-        :else (for [step (sequences-step start end)
-                    :let [mid (pos-step start step)]
-                    tail (if (= mid end) [[]] (loc-sequences mid end))]
-                (cons step tail))))
+        (= start end)    [[]]
+        :else (for [button (sequences-step start end)
+                    :let [next-pos (pos-step start button)]
+                    tail (if (= next-pos end) [[]] (loc-sequences next-pos end))]
+                (cons button tail))))
 
 (defn map-pairs [f s] (map f s (next s)))
 
