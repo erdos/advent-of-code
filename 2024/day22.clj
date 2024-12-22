@@ -14,17 +14,15 @@
      (time)
      (println 'First))
 
-(defn assoc-missing [m k v] (if (contains? m k) m (assoc m k v)))
-
 (defn line->map [line]
   (->> (iterate evolve line)
-       (take 2000)
+       (take 2001)
        (map #(mod % 10))
        (partition 2 1)
        (map (fn [[a b]] [(- b a) b]))
        (partition 4 1)
-       (reduce (fn [m [[ad] [bd] [cd] [dd p]]]
-                 (assoc-missing m [ad bd cd dd] p))
+       (reduce (fn [m [[a] [b] [c] [d p]]]
+                 (update m [a b c d] #(or %1 %2) p))
                {})))
 
 (->> lines
