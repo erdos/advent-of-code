@@ -26,7 +26,7 @@
                {})))
 
 (->> lines
-     (map line->map)
+     (pmap line->map)
      (apply merge-with +)
      (vals)
      (apply max)
