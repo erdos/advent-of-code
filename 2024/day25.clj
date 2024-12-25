@@ -7,7 +7,7 @@
 (defn pin-heights [grid]
   (->> grid
        (apply map vector) ;; transpose
-       (map #(filter #{\#} %))
+       (map (partial keep #{\#}))
        (map count)
        (mapv dec)))
 
